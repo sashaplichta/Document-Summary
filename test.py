@@ -26,7 +26,7 @@ def extract_paragraphs(pdf_file):
     return paragraphs
 
 # Use the function on a specific PDF file
-pdf_file = 'path_to_your_pdf_file.pdf'
+pdf_file = 'redlight.pdf'
 paragraphs = extract_paragraphs(pdf_file)
 
 # Print out the extracted paragraphs
@@ -34,3 +34,34 @@ for i, paragraph in enumerate(paragraphs):
     print(f"Paragraph {i+1}:")
     print(paragraph)
     print()
+
+# import PyPDF2
+
+# def extract_paragraphs(pdf_file):
+#     # Open the PDF file
+#     with open(pdf_file, 'rb') as file:
+#         # Create a PDF reader object
+#         reader = PyPDF2.PdfFileReader(file)
+
+#         # Initialize an empty string to hold the extracted text
+#         text = ''
+
+#         # Iterate over the pages in the PDF and extract the text from each one
+#         for i in range(reader.getNumPages()):
+#             page = reader.getPage(i)
+#             text += page.extractText()
+
+#     # Split the text into paragraphs based on two consecutive line breaks
+#     paragraphs = text.split('\n\n')
+
+#     return paragraphs
+
+# # Use the function on a specific PDF file
+# pdf_file = 'redlight.pdf'
+# paragraphs = extract_paragraphs(pdf_file)
+
+# # Print out the extracted paragraphs
+# for i, paragraph in enumerate(paragraphs):
+#     print(f"Paragraph {i+1}:")
+#     print(paragraph)
+#     print()
