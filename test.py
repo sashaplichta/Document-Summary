@@ -31,9 +31,10 @@ paragraphs = extract_paragraphs(pdf_file)
 
 # Print out the extracted paragraphs
 for i, paragraph in enumerate(paragraphs):
-    print(f"Paragraph {i+1}:")
-    print(paragraph)
-    print()
+    if (len(paragraph) > 600):
+        print(f"Paragraph {i+1}:")
+        print(paragraph)
+        print()
 
 # import PyPDF2
 
