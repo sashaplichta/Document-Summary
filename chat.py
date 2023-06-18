@@ -8,9 +8,7 @@ class chat():
                          'User' : []}
     
     def start_chat(self, missed_tags):
-        output = ("It looks like you missed a couple questions. Since most had to do with " 
-                + missed_tags[0] + " and " + missed_tags[1] 
-                + ", I'm here to give you a quick overview and help clear up any misunderstanding.")
+        output = ("\nIt looks like you missed a couple questions. Since most had to do with " + missed_tags[0] + " and " + missed_tags[1] + ", I'm here to give you a quick overview and help clear up any misunderstanding.")
 
         response = openai.Completion.create(
             model="text-davinci-003",
@@ -23,8 +21,8 @@ class chat():
             presence_penalty=0
         )
         output_tail = "\nDo you have any questions?"
-        self.chat_log['GPT'].append(output + '\n' + response.choices[0]['text'] + output_tail)
-        print(output + '\n' + response.choices[0]['text'] + output_tail)
+        self.chat_log['GPT'].append(output + response.choices[0]['text'] + output_tail)
+        print(output + response.choices[0]['text'] + output_tail)
         
         user_input = input("User: ")
         self.chat_log['User'].append(user_input)
@@ -51,7 +49,10 @@ class chat():
                                  for item in pair])
 
     def display_response(self, response):
-        print(response)
+        if (response[0:2] == '\n'):
+            print(response[4:])
+        else:
+            print(response)
 
 # session = chat()
 # session.start_chat(['large language models', 'neural networks'])

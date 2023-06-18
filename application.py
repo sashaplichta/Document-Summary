@@ -1,8 +1,8 @@
 import os
+import json
 import openai
-# from reportlab.pdfgen.canvas import Canvas
-from pdfminer.high_level import extract_text
-from nltk.tokenize import blankline_tokenize
+from chat import chat
+from preprocess import preprocessor
 
 class application():
     def __init__(self):
@@ -10,6 +10,7 @@ class application():
         self.preprocessor = preprocessor()
         self.users = user_db() # instantiate user database
         # self.content = post_db() # instantiate post db
+        self.questions = {}
         
         self.junk_encoding = {'Hard' : 2, 'Original' : 2, 'Hard/Original' : 2, 'Medium' : 1, 'Easy' : 0}
 
@@ -34,7 +35,10 @@ class application():
 
             # launch quiz
             # to be implemented
-            results = (0.4, ["eye structure", "experimental design"])
+            # self.get_quiz(docs[1])
+            with open('quiz.txt', 'r') as fh:
+                self.questions = json.loads(fh.read())
+            results = self.give_quiz()
 
             # launch chat
             if self.need_chat(results):
@@ -55,7 +59,7 @@ class application():
         self.eli5_text = self.get_eli5_version(self.uni_level_text) # collapse the previous level and create a high level summary
         self.uni_level_doc = self.to_pdf(self.uni_level_text)
         self.eli5_doc = self.to_pdf(self.eli5_text)
-        self.past_questions = [] # this is local and we do nothing with it so not sure what the point is
+        # self.past_questions = [] # this is local and we do nothing with it so not sure what the point is
         return (self.pdf_text, self.uni_level_doc, self.eli5_doc)
 
     def get_uni_version(self, pdf_text):
@@ -104,39 +108,6 @@ class application():
         # return {'title' : title,
         #         'body' : text}
 
-    def get_quiz(self, text):
-        print("generating quiz")
-        response = openai.Completion.create(
-            model="text-davinci-003",
-            prompt= "Generate 5 questions and answers based on the scientific text proceeding the semicolon. The questions and answers pairs should all be coupled in a python list, and these question/answer lists must be in a python list. These answers must be what you consider to be ideal for the given question. Do not label anything - the entirety of your response should be a python list:" + text,
-            temperature=1,
-            max_tokens=256,
-            top_p=1,
-            frequency_penalty=0,
-            presence_penalty=0
-            )
-        self.past_questions.extend(response.choices[0]['text'])
-        return response.choices[0]['text']
-
-    def process_quiz(self, answers=[]): #answers is placeholder atm
-        questions = self.past_questions[-1]
-        print("generating quiz")
-        for i in range(len(questions)):
-            questions[i].append(answers[i])
-        print(str(questions))
-        print(str(answers))
-
-        response = openai.Completion.create(
-            model="text-davinci-003",
-            prompt="The following is a python list of lists, index 0 of each a question, index 1 being the best answer to the question, and index 2 being an answer to the aforementioned question that you must grade, based on a comparison to the best answer and the answer's correctness" + str(questions), 
-            temperature=1,
-            max_tokens=256,
-            top_p=1,
-            frequency_penalty=0,
-            presence_penalty=0
-            )
-        return response
-    
     def get_dummy_docs(self):
         with open('original_text.txt', "r") as fh:
             hard = fh.read()
@@ -158,89 +129,65 @@ class application():
     def extract_tags(self, results):
         return results[1]
 
-# ------------------------- Document and preprocessor code classes ------------------------- 
+# ------------------------- Quiz Handling ------------------------- 
 
-class document():
-    def __init__(self, text, raw_doc):
-        self.text = text
-        self.raw = raw_doc
-
-    def set_title(self, title):
-        self.title = title
-
-class preprocessor():
-    def __init__(self, min_par_length=600):
-        self.min_par_length = min_par_length
-
-    def split_document(self, pdf_file):
-        text = extract_text(pdf_file)
-        paragraphs = blankline_tokenize(text)
-
-        result = []
-        for paragraph in paragraphs:
-            if len(paragraph) > self.min_par_length:
-                result.append(paragraph.replace("\n", ""))
-        
-        return result
-
-# ------------------------- Chat code class ------------------------- 
-
-class chat():
-    def __init__(self):
-        openai.api_key = os.getenv("OPENAI_API_KEY")
-        self.chat_log = {'GPT' : [],
-                         'User' : []}
-    
-    def start_chat(self, missed_tags):
-        output = ("\nIt looks like you missed a couple questions. Since most had to do with " 
-                + missed_tags[0] + " and " + missed_tags[1] 
-                + ", I'm here to give you a quick overview and help clear up any misunderstanding.")
-
+    def get_quiz(self, text):
+        # print("generating quiz")
         response = openai.Completion.create(
             model="text-davinci-003",
-            prompt=("Tell me a little bit about " + missed_tags[0] + " and " + missed_tags[1] + 
-                    ". If I make any mistakes during our conversation, please correct me."),
+            prompt= "Generate 5 questions and answers based on the text following the colon. The questions and answers pairs should all be outputted in a python dictionary in the form {\"Question\" : \"Answer\"}. These answers must be what you consider to be ideal for the given question. Do not label anything - the entirety of your response should be a python dictionary: " + text,
             temperature=1,
             max_tokens=256,
             top_p=1,
             frequency_penalty=0,
             presence_penalty=0
-        )
-        output_tail = "\nDo you have any questions?"
-        self.chat_log['GPT'].append(output + response.choices[0]['text'] + output_tail)
-        print(output + response.choices[0]['text'] + output_tail)
-        
-        user_input = input("User: ")
-        self.chat_log['User'].append(user_input)
+            )
+        with open('quiz.txt', "w") as fh:
+            fh.write(response.choices[0]['text'])
+        self.questions = json.loads(response.choices[0]['text'])
+        # return response.choices[0]['text']
 
-        while(user_input != 'end chat'):
-            alternated_log = self.alternate(self.chat_log)
+    def give_quiz(self): #answers is placeholder atm
+        self.answers = {}
+        cur_score = 0
+        for question in self.questions.keys():
+            print(question + '\n')
+            user_answer = input("Your Answer: ")
+
             response = openai.Completion.create(
                 model="text-davinci-003",
-                prompt=alternated_log,
+                prompt="Do the following two sentences contain similar, and non-contradictory, statements: \"" + user_answer + "\" and \"" + self.questions[question] + "\"? Answer using exactly one word, either yes or no", 
+                temperature=1,
+                max_tokens=10,
+                top_p=1,
+                frequency_penalty=0,
+                presence_penalty=0
+            )
+            self.answers[question] = [self.questions[question], user_answer, response.choices[0]['text'].lower() == "yes"]
+            if (response.choices[0]['text'].lower() == "yes"):
+                cur_score += 1
+        
+        return [cur_score / len(self.questions.keys()), self.get_worst_tags(self.answers)]
+    
+    def get_worst_tags(self, scores):
+        wrong = ''
+        for question in scores.keys():
+            if not scores[question][2]:
+                wrong += scores[question][0]
+
+        response = openai.Completion.create(
+                model="text-davinci-003",
+                prompt="What two subjects does this list of sentences have most in common? Answer in the form of a Python list of the structure [\"Subject1\", \"Subject2\"] with no additional text: " + wrong, 
                 temperature=1,
                 max_tokens=256,
                 top_p=1,
                 frequency_penalty=0,
                 presence_penalty=0
             )
-            self.display_response(response.choices[0]['text'])
-            user_input = input("User: ")
+        tags = response.choices[0]['text'].strip('][').split(', ')
+        return tags
 
-            self.chat_log['GPT'].append(response.choices[0]['text'])
-            self.chat_log['User'].append(user_input)
-
-    def alternate(self, log):
-        return '\n'.join([item for pair in zip(log['GPT'], log['User'] + [0])
-                                 for item in pair])
-
-    def display_response(self, response):
-        if (response[0:2] == '\n'):
-            print(response[4:])
-        else:
-            print(response)
-
-# ------------------------- Database code classes -------------------------
+# ------------------------- Database mimic code classes -------------------------
 
 class user_db():
     def __init__(self):
@@ -259,16 +206,3 @@ class post_db():
 
 app = application()
 app.run()
-# app.get_documents('redlight.pdf')
-
-# print(app.eli5_text)
-# print(app.get_quiz(app.uni_level_text))
-# print(app.process_quiz(['Yes', 'no', 'maybe', 'photons', 'Si' ]))
-# print(len(app.pdf_text))
-
-# with open('original_text.txt', "w") as fh:
-#     fh.write(app.pdf_text)
-# with open('eli5_level_text.txt', "w") as fh:
-#     fh.write(app.eli5_doc)
-# with open('uni_level_text.txt', "w") as fh:
-#     fh.write(app.uni_level_doc)

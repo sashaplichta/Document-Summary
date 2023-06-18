@@ -1,0 +1,5 @@
+{"What molecules are necessary to fuel cellular functions?": "Adenosine triphosphate (ATP) is necessary to fuel cellular functions.", 
+"What age group was used in the psychophysical study?": "The psychophysical study included healthy participants aged between 28-72 years.", 
+"What range of wavelengths of light was used in the study?": "A light device within the range of 650-1000nm was used in the study.", 
+"What measurements were taken post-intervention?": "Rod thresholds and color contrast sensitivity (CCS) were measured post-intervention.", 
+"What effect did the light have on individuals aged greater than 40?": "Individuals aged greater than 40 had a significant improvement in CCS and rod thresholds after the light exposure intervention."}
