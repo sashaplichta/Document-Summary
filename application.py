@@ -13,12 +13,13 @@ class application():
     def get_documents(self, pdf_file):
         self.raw_pdf = pdf_file
         self.pdf_text = self.preprocessor.split_document(pdf_file)[0:2]
+
         self.uni_level_text = '\n'.join(self.get_uni_version(self.pdf_text))
         self.eli5_text = self.get_eli5_version(self.uni_level_text) # collapse the previous level and create a high level summary
         self.uni_level_doc = self.to_pdf(self.uni_level_text)
         self.eli5_doc = self.to_pdf(self.eli5_text)
         self.past_questions = []
-        print(self.eli5_doc)
+        # print(self.eli5_doc)
 
     def get_uni_version(self, pdf_text):
         print("running uni version")
@@ -27,7 +28,7 @@ class application():
             print('running paragraph')
             response = openai.Completion.create(
                 model="text-davinci-003",
-                prompt="""Using an academic tone, summarize the text at the technical level of an upper year university student: """ + paragraph,
+                prompt="Using an academic tone, summarize the text at the technical level of an upper year university student: " + paragraph,
                 temperature=1,
                 max_tokens=256,
                 top_p=1,
@@ -41,9 +42,9 @@ class application():
         print("running eli5 version")
         response = openai.Completion.create(
             model="text-davinci-003",
-            prompt="Summarize the following essay at the level of a non-technical audience: " + uni_text,
+            prompt="Summarize the following text for a non-technical audience: " + uni_text,
             temperature=1,
-            max_tokens=3000,
+            max_tokens=256,
             top_p=1,
             frequency_penalty=0,
             presence_penalty=0
@@ -62,7 +63,7 @@ class application():
             frequency_penalty=0,
             presence_penalty=0
         )
-        return title.choices[0]['text'] + '\n' + text
+        return title.choices[0]['text'] + '\n\n' + text
         # return {'title' : title,
         #         'body' : text}
 
@@ -121,6 +122,7 @@ class preprocessor():
                 result.append(paragraph.replace("\n", ""))
         
         return result
+
 
 
 # app = application()
