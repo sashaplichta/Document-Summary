@@ -1,9 +1,8 @@
 import os
 import json
 import openai
-# from reportlab.pdfgen.canvas import Canvas
-from pdfminer.high_level import extract_text
-from nltk.tokenize import blankline_tokenize
+from chat import chat
+from preprocess import preprocessor
 
 class application():
     def __init__(self):
@@ -109,6 +108,29 @@ class application():
         # return {'title' : title,
         #         'body' : text}
 
+    def get_dummy_docs(self):
+        with open('original_text.txt', "r") as fh:
+            hard = fh.read()
+        with open('eli5_level_text.txt', "r") as fh:
+            easy = fh.read()
+        with open('uni_level_text.txt', "r") as fh:
+            medium = fh.read()
+
+        return [easy, medium, hard]
+    
+    def display(self, text):
+        print('\n' + text + '\n')
+    
+    def need_chat(self, results):
+        if results[0] <= 0.6:
+            return True
+        return False
+    
+    def extract_tags(self, results):
+        return results[1]
+
+# ------------------------- Quiz Handling ------------------------- 
+
     def get_quiz(self, text):
         # print("generating quiz")
         response = openai.Completion.create(
@@ -165,110 +187,7 @@ class application():
         tags = response.choices[0]['text'].strip('][').split(', ')
         return tags
 
-    def get_dummy_docs(self):
-        with open('original_text.txt', "r") as fh:
-            hard = fh.read()
-        with open('eli5_level_text.txt', "r") as fh:
-            easy = fh.read()
-        with open('uni_level_text.txt', "r") as fh:
-            medium = fh.read()
-
-        return [easy, medium, hard]
-    
-    def display(self, text):
-        print('\n' + text + '\n')
-    
-    def need_chat(self, results):
-        if results[0] <= 0.6:
-            return True
-        return False
-    
-    def extract_tags(self, results):
-        return results[1]
-
-# ------------------------- Document and preprocessor code classes ------------------------- 
-
-class document():
-    def __init__(self, text, raw_doc):
-        self.text = text
-        self.raw = raw_doc
-
-    def set_title(self, title):
-        self.title = title
-
-class preprocessor():
-    def __init__(self, min_par_length=600):
-        self.min_par_length = min_par_length
-
-    def split_document(self, pdf_file):
-        text = extract_text(pdf_file)
-        paragraphs = blankline_tokenize(text)
-
-        result = []
-        for paragraph in paragraphs:
-            if len(paragraph) > self.min_par_length:
-                result.append(paragraph.replace("\n", ""))
-        
-        return result
-
-# ------------------------- Chat code class ------------------------- 
-
-class chat():
-    def __init__(self):
-        openai.api_key = os.getenv("OPENAI_API_KEY")
-        self.chat_log = {'GPT' : [],
-                         'User' : []}
-    
-    def start_chat(self, missed_tags):
-        output = ("\nIt looks like you missed a couple questions. Since most had to do with " 
-                + missed_tags[0] + " and " + missed_tags[1] 
-                + ", I'm here to give you a quick overview and help clear up any misunderstanding.")
-
-        response = openai.Completion.create(
-            model="text-davinci-003",
-            prompt=("Tell me a little bit about " + missed_tags[0] + " and " + missed_tags[1] + 
-                    ". If I make any mistakes during our conversation, please correct me."),
-            temperature=1,
-            max_tokens=256,
-            top_p=1,
-            frequency_penalty=0,
-            presence_penalty=0
-        )
-        output_tail = "\nDo you have any questions?"
-        self.chat_log['GPT'].append(output + response.choices[0]['text'] + output_tail)
-        print(output + response.choices[0]['text'] + output_tail)
-        
-        user_input = input("User: ")
-        self.chat_log['User'].append(user_input)
-
-        while(user_input != 'end chat'):
-            alternated_log = self.alternate(self.chat_log)
-            response = openai.Completion.create(
-                model="text-davinci-003",
-                prompt=alternated_log,
-                temperature=1,
-                max_tokens=256,
-                top_p=1,
-                frequency_penalty=0,
-                presence_penalty=0
-            )
-            self.display_response(response.choices[0]['text'])
-            user_input = input("User: ")
-
-            self.chat_log['GPT'].append(response.choices[0]['text'])
-            self.chat_log['User'].append(user_input)
-
-    def alternate(self, log):
-        return '\n'.join([item for pair in zip(log['GPT'], log['User'] + [0])
-                                 for item in pair])
-
-    def display_response(self, response):
-        if (response[0:2] == '\n'):
-            print(response[4:])
-        else:
-            print(response)
-
-# ------------------------- Database code classes -------------------------
+# ------------------------- Database mimic code classes -------------------------
 
 class user_db():
     def __init__(self):

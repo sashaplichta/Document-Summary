@@ -22,8 +22,8 @@ class preprocessor():
             if len(paragraph) > self.min_par_length:
                 result.append(paragraph.replace("\n", ""))
         
-        return document(result, pdf_file)
+        return result
 
-pre = preprocessor()
-doc = pre.split_document('redlight.pdf')
-for x in doc.text[0:2]: print(x + '\n')
+# pre = preprocessor()
+# doc = pre.split_document('redlight.pdf')
+# for x in doc.text[0:2]: print(x + '\n')
