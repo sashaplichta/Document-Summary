@@ -6,7 +6,7 @@ from nltk.tokenize import blankline_tokenize
 
 class application():
     def __init__(self):
-        openai.api_key = "" #key goes here
+        openai.api_key = os.getenv("OPENAI_API_KEY")
         self.preprocessor = preprocessor()
 
     # pdf_file as string name of pdf if local -- gotta figure something else out otherwise
