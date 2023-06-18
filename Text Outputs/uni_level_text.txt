@@ -1,7 +1,4 @@
-
-
 "Age-related Photoreceptor Decline and the Mitigation of Its Effects with Light Therapy"
-
 
 Age-related declines in cellular metabolism and photoreceptor function are observed throughout the lifespan. Mitochondria play a 
 critical role in this process by providing cells with the necessary adenosine triphosphate (ATP) to fuel cellular function. 
