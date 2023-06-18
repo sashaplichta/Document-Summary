@@ -14,11 +14,12 @@ class application():
         self.raw_pdf = pdf_file
         self.pdf_text = self.preprocessor.split_document(pdf_file)[0:2]
 
-        self.university_level_text = '\n'.join(self.get_uni_version(self.pdf_text))
-        self.eli5_text = self.get_eli5_version(self.university_level_text) # collapse the previous level and create a high level summary
-        self.uni_level_doc = self.to_pdf(self.university_level_text)
+        self.uni_level_text = '\n'.join(self.get_uni_version(self.pdf_text))
+        self.eli5_text = self.get_eli5_version(self.uni_level_text) # collapse the previous level and create a high level summary
+        self.uni_level_doc = self.to_pdf(self.uni_level_text)
         self.eli5_doc = self.to_pdf(self.eli5_text)
-        print(self.eli5_doc)
+        self.past_questions = []
+        # print(self.eli5_doc)
 
     def get_uni_version(self, pdf_text):
         print("running uni version")
@@ -66,6 +67,39 @@ class application():
         # return {'title' : title,
         #         'body' : text}
 
+    def get_quiz(self, text):
+        print("generating quiz")
+        response = openai.Completion.create(
+            model="text-davinci-003",
+            prompt= "Generate 5 questions and answers based on the scientific text proceeding the semicolon. The questions and answers pairs should all be coupled in a python list, and these question/answer lists must be in a python list. These answers must be what you consider to be ideal for the given question. Do not label anything - the entirety of your response should be a python list:" + text,
+            temperature=1,
+            max_tokens=256,
+            top_p=1,
+            frequency_penalty=0,
+            presence_penalty=0
+            )
+        self.past_questions.extend(response.choices[0]['text'])
+        return response.choices[0]['text']
+
+    def process_quiz(self, answers=[]): #answers is placeholder atm
+        questions = self.past_questions[-1]
+        print("generating quiz")
+        for i in range(len(questions)):
+            questions[i].append(answers[i])
+        print(str(questions))
+        print(str(answers))
+
+        response = openai.Completion.create(
+            model="text-davinci-003",
+            prompt="The following is a python list of lists, index 0 of each a question, index 1 being the best answer to the question, and index 2 being an answer to the aforementioned question that you must grade, based on a comparison to the best answer and the answer's correctness" + str(questions), 
+            temperature=1,
+            max_tokens=256,
+            top_p=1,
+            frequency_penalty=0,
+            presence_penalty=0
+            )
+        return response
+
 class document():
     def __init__(self, text, raw_doc):
         self.text = text
@@ -90,5 +124,18 @@ class preprocessor():
         return result
 
 
-app = application()
-app.get_documents('redlight.pdf')
+
+# app = application()
+# app.get_documents('redlight.pdf')
+
+# print(app.eli5_text)
+# print(app.get_quiz(app.uni_level_text))
+# print(app.process_quiz(['Yes', 'no', 'maybe', 'photons', 'Si' ]))
+# print(len(app.pdf_text))
+
+# with open('original_text.txt', "w") as fh:
+#     fh.write(app.pdf_text)
+# with open('eli5_level_text.txt', "w") as fh:
+#     fh.write(app.eli5_doc)
+# with open('uni_level_text.txt', "w") as fh:
+#     fh.write(app.uni_level_doc)
