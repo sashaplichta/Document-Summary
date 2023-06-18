@@ -1,0 +1,42 @@
+prompt:
+create a 5 question quiz, tag each question by its related topic, 
+attach 3 wrong answers and 1 correct answer between each question, tag the correct answer
+avoid topics related to the specifics of this study such as: Participants, age, questions should relate to the concepts of the paper:
+
+
+Quiz Topic: Mitochondrial Function and Photoreceptor Performance
+
+Question 1 [Topic: Mitochondria]:
+Which organelle is responsible for providing cells with the necessary adenosine triphosphate (ATP) to fuel cellular function?
+a) Nucleus
+b) Golgi apparatus
+c) Endoplasmic reticulum
+d) Mitochondria (Correct Answer)
+
+Question 2 [Topic: Mitochondrial Density and Activity]:
+What happens to mitochondrial density and activity in photoreceptors as individuals age?
+a) It remains constant.
+b) It increases.
+c) It decreases. (Correct Answer)
+d) It fluctuates randomly.
+
+Question 3 [Topic: Light Therapy]:
+Which range of light wavelengths has been found to improve mitochondrial complex activity, membrane potential, and ATP production?
+a) 400-600nm
+b) 500-700nm
+c) 650-1000nm (Correct Answer)
+d) 1100-1300nm
+
+Question 4 [Topic: Psychophysical Study]:
+In the conducted psychophysical study, which aspect of photoreceptor performance showed a significant decline after the age of 40 years?
+a) Rod thresholds
+b) Color contrast sensitivity (CCS)
+c) Both rod thresholds and CCS
+d) None of the above (Correct Answer)
+
+Question 5 [Topic: Light Intervention]:
+Based on the study's results, which age group showed a significant improvement in color contrast sensitivity (CCS) after the 670-nm light exposure intervention?
+a) Younger than 30
+b) 30-40
+c) Older than 40 (Correct Answer)
+d) Older than 50
