@@ -86,9 +86,9 @@ class preprocessor():
         return result
 
 
-app = application()
-app.get_documents('redlight.pdf')
-print(len(app.pdf_text))
+# app = application()
+# app.get_documents('redlight.pdf')
+# print(len(app.pdf_text))
 
 # with open('original_text.txt', "w") as fh:
 #     fh.write(app.pdf_text)
