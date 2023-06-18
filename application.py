@@ -36,9 +36,10 @@ class application():
 
             # launch quiz
             # to be implemented
-            self.get_quiz(docs[1])
+            # self.get_quiz(docs[1])
+            with open('quiz.txt', 'r') as fh:
+                self.questions = json.loads(fh.read())
             results = self.give_quiz()
-            # results = (0.4, ["eye structure", "experimental design"])
 
             # launch chat
             if self.need_chat(results):
@@ -112,13 +113,15 @@ class application():
         # print("generating quiz")
         response = openai.Completion.create(
             model="text-davinci-003",
-            prompt= "Generate 5 questions and answers based on the text following the colon. The questions and answers pairs should all be outputted in a python dictionary in the form {Question : Answer}. These answers must be what you consider to be ideal for the given question. Do not label anything - the entirety of your response should be a python dictionary: " + text,
+            prompt= "Generate 5 questions and answers based on the text following the colon. The questions and answers pairs should all be outputted in a python dictionary in the form {\"Question\" : \"Answer\"}. These answers must be what you consider to be ideal for the given question. Do not label anything - the entirety of your response should be a python dictionary: " + text,
             temperature=1,
             max_tokens=256,
             top_p=1,
             frequency_penalty=0,
             presence_penalty=0
             )
+        with open('quiz.txt', "w") as fh:
+            fh.write(response.choices[0]['text'])
         self.questions = json.loads(response.choices[0]['text'])
         # return response.choices[0]['text']
 
@@ -284,16 +287,3 @@ class post_db():
 
 app = application()
 app.run()
-# app.get_documents('redlight.pdf')
-
-# print(app.eli5_text)
-# print(app.get_quiz(app.uni_level_text))
-# print(app.process_quiz(['Yes', 'no', 'maybe', 'photons', 'Si' ]))
-# print(len(app.pdf_text))
-
-# with open('original_text.txt', "w") as fh:
-#     fh.write(app.pdf_text)
-# with open('eli5_level_text.txt', "w") as fh:
-#     fh.write(app.eli5_doc)
-# with open('uni_level_text.txt', "w") as fh:
-#     fh.write(app.uni_level_doc)
