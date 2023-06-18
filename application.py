@@ -123,8 +123,8 @@ class preprocessor():
         return result
 
 
-app = application()
-app.get_documents('redlight.pdf')
-print(app.eli5_text)
-print(app.get_quiz(app.uni_level_text))
-print(app.process_quiz(['Yes', 'no', 'maybe', 'photons', 'Si' ]))
+# app = application()
+# app.get_documents('redlight.pdf')
+# print(app.eli5_text)
+# print(app.get_quiz(app.uni_level_text))
+# print(app.process_quiz(['Yes', 'no', 'maybe', 'photons', 'Si' ]))
