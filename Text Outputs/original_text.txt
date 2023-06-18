@@ -1,0 +1,36 @@
+The age spectrum of human populations is shifting toward the older with larger proportions suffering physical decline. 
+Mitochondria influence the pace of aging as the energy they provide for cellular function in the form of adenosine triphosphate (ATP) 
+declines with age. Mitochondrial density is greatest in photoreceptors, particularly cones that have high energy demands and mediate 
+color vision. Hence, the retina ages faster than other organs, with a 70% ATP reduction over life and a significant decline in 
+photoreceptor function. Mitochondria have specific light absorbance characteristics influencing their performance. Longer wavelengths 
+spanning 650–>1,000 nm improve mitochondrial complex activity, membrane potential, and ATP production. Here, we use 670-nm light to 
+improve photoreceptor performance  and  measure  this  psychophysically  in  those  aged  28–72  years.  Rod  and  cone  performance  
+declined  significantly  after approximately 40 years of age. 670-nm light had no impact in younger individuals, but in those around 
+40 years and older, significant improvements were obtained in color contrast sensitivity for the blue visual axis (tritan) known to 
+display mitochondrial vulnerability. The red visual axis (protan) improved but not significantly. Rod thresholds also improved 
+significantly in those >40 years. Using specific wavelengths to enhance mitochondrial performance will be significant in moderating 
+the aging process in this metabolically demanding tissue.
+
+Human  aging  is  a  major  societal  problem  and  the  retina  ages faster than other organs, partly due to its high metabolic rate (1,2).
+Here, 30% of central rods die and cones have reduced function by 70 years of age (3–5). The pace of aging is partly controlled by the 
+cells metabolism regulated by its mitochondria that produce adeno-sine  triphosphate  (ATP)  to  fuel  cell  function.  When  
+mitochondria decline, they have reduced membrane potential and ATP synthesis. When this occurs, mitochondria can increase production of 
+reactive oxygen species that increases systemic inflammation and can signal cell death (6).
+
+improvements  in  mitochondrial  function  are  associated  with  an increase  in  mitochondrial  membrane  potential  and  ATP  
+produc-tion  (8,9).  Further,  long-wavelength  light  can  improve  retinal  and general  central  nervous  system  function  that  has  
+declined  due  to age  or  mitochondrial  insult  (10–12).  It  has  also  been  shown  that photobiomodulation can improve aged murine 
+retinal function (13). However,  the  mouse  retina  lacks  a  peak  in  cone  density  centrally and ages very differently from primates 
+(14). Further, rodents com-monly  avoid  light  and  do  not  use  vision  as  their  primary  sensory modality.
+
+Twenty-four  healthy  participants  of  both  sexes  were  used  with University College London ethical approval. They ranged from 28 to 
+72 years. The cutoff point between younger and older groups was >38 years, with age as the only significant variable. Different 
+participants were used to measure rod (scotopic) thresholds and color  contrast  sensitivity  (CCS),  which  were  undertaken  at  
+dif-ferent times. There were 12 individuals in each group. In the CCS group there were six younger (five female and one male) and 
+six older  (four  female  and  two  male)  participants,  and  in  the  sco-topic  threshold  group  there  were  six  younger  (four  
+females  and two  males)  and  six  older  (four  female  and  two  males)  partici-pants.  670-nm  light  devices  were  based  on  
+simple  commercial DC  torches  with  ten  670-nm  LEDs  mounted  behind  a  light  dif-fuser  embedded  in  a  tube  that  was  4  
+cm  in  diameter.  Energies at  the  cornea  were  approximately  40  mW/cm2  which  often  re-sulted  in  a  mild  green  after  
+image  for  approximately  5–10  sec-onds. Participants were asked to use the light to illuminate their dominant eye every morning for 
+3 minutes and to repeat this daily for 2 weeks. These metrics were selected because they fell within the range used in a large number of 
+animal experiments. 670-nm illumination was largely confined to the central retina comprising the peaks in rod and cone density.

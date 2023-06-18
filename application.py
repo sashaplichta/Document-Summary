@@ -41,9 +41,9 @@ class application():
         print("running eli5 version")
         response = openai.Completion.create(
             model="text-davinci-003",
-            prompt="Summarize the following text for a non-technical audience: " + uni_text,
+            prompt="Summarize the following essay at the level of a non-technical audience: " + uni_text,
             temperature=1,
-            max_tokens=256,
+            max_tokens=3000,
             top_p=1,
             frequency_penalty=0,
             presence_penalty=0
@@ -62,7 +62,7 @@ class application():
             frequency_penalty=0,
             presence_penalty=0
         )
-        return title.choices[0]['text'] + '\n\n' + text
+        return title.choices[0]['text'] + '\n' + text
         # return {'title' : title,
         #         'body' : text}
 

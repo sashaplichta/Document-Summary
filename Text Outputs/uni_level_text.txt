@@ -1,0 +1,20 @@
+"Age-related Photoreceptor Decline and the Mitigation of Its Effects with Light Therapy"
+
+Age-related declines in cellular metabolism and photoreceptor function are observed throughout the lifespan. Mitochondria play a 
+critical role in this process by providing cells with the necessary adenosine triphosphate (ATP) to fuel cellular function. 
+Mitochondrial density and activity is greatest in photoreceptors which have high energy demands and is significantly reduced with 
+age resulting in a 70% ATP reduction over the life course (1-5). The use of specific wavelengths of light spanning 650-1000nm has 
+been found to improve mitochondrial complex activity, membrane potential, and ATP production (6-8). 
+
+In order to assess the impact of light on photoreceptor performance in aging individuals, a psychophysical study was conducted. 
+24 healthy participants aged between 28-72 years were included and randomly divided into two groups, younger (age <38) and older 
+(age >38). Participants were asked to illuminate their dominant eye with a 670-nm light device for three minutes a day for two weeks. 
+Rod and cone performance, as measured by rod thresholds and color contrast sensitivity (CCS), respectively, were recorded post-intervention. 
+
+Results revealed that rod and cone performance significantly declined after the age of 40 years. However, a 670-nm light exposure 
+intervention was seen to have no impact on those aged <40 years, while in comparison, a significant improvement in CCS was seen for 
+blue visual axis (tritan) in those aged >40 years. Moreover, rod thresholds also improved significantly in those aged >40. 
+
+It is thus evident from the data collected that improvements in mitochondrial function with light therapy may prove beneficial in 
+mitigating the aging process in metabolically demanding photoreceptors. Further research is needed to understand the effects of 
+optical bio-regulation in other organs and systems throughout the body.
