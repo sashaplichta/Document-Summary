@@ -12,34 +12,38 @@ class application():
     # pdf_file as string name of pdf if local -- gotta figure something else out otherwise
     def get_documents(self, pdf_file):
         self.raw_pdf = pdf_file
-        self.pdf_text = '\n'.join(self.preprocessor.split_document(pdf_file)[0:4])
+        self.pdf_text = self.preprocessor.split_document(pdf_file)[0:2]
 
-        self.university_level_text = self.get_uni_version(self.pdf_text)
+        self.university_level_text = '\n'.join(self.get_uni_version(self.pdf_text))
         self.eli5_text = self.get_eli5_version(self.university_level_text) # collapse the previous level and create a high level summary
         self.uni_level_doc = self.to_pdf(self.university_level_text)
         self.eli5_doc = self.to_pdf(self.eli5_text)
+        print(self.eli5_doc)
 
     def get_uni_version(self, pdf_text):
         print("running uni version")
-        prompt = "Using an academic tone, rewrite the following essay at the technical level of an upper year university student: " + pdf_text
-        response = openai.Completion.create(
-            model="text-davinci-003",
-            prompt=prompt,
-            temperature=1,
-            max_tokens= 3000,
-            top_p=1,
-            frequency_penalty=0,
-            presence_penalty=0
-        )
-        return response.choices[0]['text']
+        uni_version = []
+        for paragraph in pdf_text:
+            print('running paragraph')
+            response = openai.Completion.create(
+                model="text-davinci-003",
+                prompt="Using an academic tone, summarize the text at the technical level of an upper year university student: " + paragraph,
+                temperature=1,
+                max_tokens=256,
+                top_p=1,
+                frequency_penalty=0,
+                presence_penalty=0
+            )
+            uni_version.append(response.choices[0]['text'])
+        return uni_version
     
     def get_eli5_version(self, uni_text):
         print("running eli5 version")
         response = openai.Completion.create(
             model="text-davinci-003",
-            prompt="Summarize the following essay at the level of a non-technical audience: " + uni_text,
+            prompt="Summarize the following text for a non-technical audience: " + uni_text,
             temperature=1,
-            max_tokens=3000,
+            max_tokens=256,
             top_p=1,
             frequency_penalty=0,
             presence_penalty=0
@@ -58,7 +62,7 @@ class application():
             frequency_penalty=0,
             presence_penalty=0
         )
-        return title.choices[0]['text'] + '\n' + text
+        return title.choices[0]['text'] + '\n\n' + text
         # return {'title' : title,
         #         'body' : text}
 
@@ -88,11 +92,3 @@ class preprocessor():
 
 app = application()
 app.get_documents('redlight.pdf')
-print(len(app.pdf_text))
-
-# with open('original_text.txt', "w") as fh:
-#     fh.write(app.pdf_text)
-# with open('eli5_level_text.txt', "w") as fh:
-#     fh.write(app.eli5_doc)
-# with open('uni_level_text.txt', "w") as fh:
-#     fh.write(app.uni_level_doc)
