@@ -14,7 +14,8 @@ class chat():
 
         response = openai.Completion.create(
             model="text-davinci-003",
-            prompt="Tell me a little bit about " + missed_tags[0] + " and " + missed_tags[1],
+            prompt=("Tell me a little bit about " + missed_tags[0] + " and " + missed_tags[1] + 
+                    ". If I make any mistakes during our conversation, please correct me.",
             temperature=1,
             max_tokens=256,
             top_p=1,
