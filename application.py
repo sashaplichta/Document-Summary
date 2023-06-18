@@ -125,6 +125,15 @@ class preprocessor():
 
 # app = application()
 # app.get_documents('redlight.pdf')
+
 # print(app.eli5_text)
 # print(app.get_quiz(app.uni_level_text))
 # print(app.process_quiz(['Yes', 'no', 'maybe', 'photons', 'Si' ]))
+# print(len(app.pdf_text))
+
+# with open('original_text.txt', "w") as fh:
+#     fh.write(app.pdf_text)
+# with open('eli5_level_text.txt', "w") as fh:
+#     fh.write(app.eli5_doc)
+# with open('uni_level_text.txt', "w") as fh:
+#     fh.write(app.uni_level_doc)
