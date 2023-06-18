@@ -8,6 +8,43 @@ class application():
     def __init__(self):
         openai.api_key = os.getenv("OPENAI_API_KEY")
         self.preprocessor = preprocessor()
+        self.users = user_db() # instantiate user database
+        # self.content = post_db() # instantiate post db
+        
+        self.junk_encoding = {'Hard' : 2, 'Original' : 2, 'Hard/Original' : 2, 'Medium' : 1, 'Easy' : 0}
+
+    def run(self):
+        self.cur_user = input("Username: ")
+        user_pass = input("Password: ")
+
+        if (self.users.authenticate(self.cur_user, user_pass)): # some function to check if username/password is right
+            # self.data = self.post_db.dbcall(self.cur_user) # get users data from post db
+            
+            cur_difficulty = input("What difficulty would you like to view your document?\nEasy, Medium, Hard/Original: ")
+            # self.cur_document = self.data.keys()[0] 
+            # cur_doc_original, cur_doc_uni, cur_doc_eli5 = self.get_documents(self.cur_document)
+            # self.display(self.data[self.cur_document])
+            docs = self.get_dummy_docs()
+            self.display(docs[self.junk_encoding[cur_difficulty]])
+            next = input("Proceed to quiz or view another difficulty? (Enter Quiz or Easy/Medium/Hard): ")
+
+            while (next != 'Quiz'):
+                self.display(docs[self.junk_encoding[next]])
+                next = input("Proceed to quiz or view another difficulty? (Enter Quiz or Easy/Medium/Hard): ")
+
+            # launch quiz
+            # to be implemented
+            results = (0.4, ["eye structure", "experimental design"])
+
+            # launch chat
+            if self.need_chat(results):
+                cur_chat = chat()
+                cur_chat.start_chat(self.extract_tags(results))
+
+            print("Congratulations! It looks like you have a good understanding!")
+
+        else:
+            print("Sorry, wrong password")
 
     # pdf_file as string name of pdf if local -- gotta figure something else out otherwise
     def get_documents(self, pdf_file):
@@ -18,8 +55,8 @@ class application():
         self.eli5_text = self.get_eli5_version(self.uni_level_text) # collapse the previous level and create a high level summary
         self.uni_level_doc = self.to_pdf(self.uni_level_text)
         self.eli5_doc = self.to_pdf(self.eli5_text)
-        self.past_questions = []
-        # print(self.eli5_doc)
+        self.past_questions = [] # this is local and we do nothing with it so not sure what the point is
+        return (self.pdf_text, self.uni_level_doc, self.eli5_doc)
 
     def get_uni_version(self, pdf_text):
         print("running uni version")
@@ -99,6 +136,29 @@ class application():
             presence_penalty=0
             )
         return response
+    
+    def get_dummy_docs(self):
+        with open('original_text.txt', "r") as fh:
+            hard = fh.read()
+        with open('eli5_level_text.txt', "r") as fh:
+            easy = fh.read()
+        with open('uni_level_text.txt', "r") as fh:
+            medium = fh.read()
+
+        return [easy, medium, hard]
+    
+    def display(self, text):
+        print(text)
+    
+    def need_chat(self, results):
+        if results[0] <= 0.6:
+            return True
+        return False
+    
+    def extract_tags(self, results):
+        return results[1]
+
+# ------------------------- Document and preprocessor code classes ------------------------- 
 
 class document():
     def __init__(self, text, raw_doc):
@@ -123,9 +183,79 @@ class preprocessor():
         
         return result
 
+# ------------------------- Chat code class ------------------------- 
+
+class chat():
+    def __init__(self):
+        openai.api_key = os.getenv("OPENAI_API_KEY")
+        self.chat_log = {'GPT' : [],
+                         'User' : []}
+    
+    def start_chat(self, missed_tags):
+        output = ("It looks like you missed a couple questions. Since most had to do with " 
+                + missed_tags[0] + " and " + missed_tags[1] 
+                + ", I'm here to give you a quick overview and help clear up any misunderstanding.")
+
+        response = openai.Completion.create(
+            model="text-davinci-003",
+            prompt=("Tell me a little bit about " + missed_tags[0] + " and " + missed_tags[1] + 
+                    ". If I make any mistakes during our conversation, please correct me."),
+            temperature=1,
+            max_tokens=256,
+            top_p=1,
+            frequency_penalty=0,
+            presence_penalty=0
+        )
+        output_tail = "\nDo you have any questions?"
+        self.chat_log['GPT'].append(output + '\n' + response.choices[0]['text'] + output_tail)
+        print(output + '\n' + response.choices[0]['text'] + output_tail)
+        
+        user_input = input("User: ")
+        self.chat_log['User'].append(user_input)
+
+        while(user_input != 'end chat'):
+            alternated_log = self.alternate(self.chat_log)
+            response = openai.Completion.create(
+                model="text-davinci-003",
+                prompt=alternated_log,
+                temperature=1,
+                max_tokens=256,
+                top_p=1,
+                frequency_penalty=0,
+                presence_penalty=0
+            )
+            self.display_response(response.choices[0]['text'])
+            user_input = input("User: ")
+
+            self.chat_log['GPT'].append(response.choices[0]['text'])
+            self.chat_log['User'].append(user_input)
+
+    def alternate(self, log):
+        return '\n'.join([item for pair in zip(log['GPT'], log['User'] + [0])
+                                 for item in pair])
+
+    def display_response(self, response):
+        print(response)
+
+# ------------------------- Database code classes -------------------------
+
+class user_db():
+    def __init__(self):
+        self.data = {'John' : '123abc'}
+
+    def authenticate(self, username, password):
+        if self.data[username] == password:
+            return True
+        return False
+
+class post_db():
+    def __init__(self):
+        self.data = {}
 
 
-# app = application()
+
+app = application()
+app.run()
 # app.get_documents('redlight.pdf')
 
 # print(app.eli5_text)
