@@ -163,7 +163,7 @@ class application():
                 frequency_penalty=0,
                 presence_penalty=0
             )
-            self.answers[question] = [self.questions[question], user_answer, response.choices[0]['text'].lower() == "yes"]
+            self.answers[question] = [self.questions[question], user_answer, response.choices[0]['text'].rstrip().lower() == "yes"]
             if (response.choices[0]['text'].lower() == "yes"):
                 cur_score += 1
         
